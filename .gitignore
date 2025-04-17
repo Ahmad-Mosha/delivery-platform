@@ -1,0 +1,15 @@
+# Node modules
+**/node_modules
+# Python
+**/__pycache__/
+**/*.pyc
+# Build
+**/dist
+# Env files
+**/.env
+# SQLite DB (لو مؤقت)
+**/*.sqlite
+# Docker volumes
+**/data
+# System files
+.DS_Store
