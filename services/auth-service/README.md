@@ -22,27 +22,99 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# Authentication Service
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is a microservice for handling authentication in the delivery platform system.
+
+## Features
+
+- User registration
+- User login with JWT authentication
+- Protected routes using JWT guard
+
+## Tech Stack
+
+- NestJS framework
+- MongoDB with Mongoose
+- JWT for authentication
+- Passport.js
+
+## Prerequisites
+
+- Node.js (v14 or later)
+- MongoDB installed and running
+- pnpm installed
 
 ## Installation
 
 ```bash
-$ pnpm install
+# Install dependencies
+pnpm install
 ```
 
 ## Running the app
 
 ```bash
-# development
-$ pnpm run start
+# Development mode
+pnpm run start:dev
 
-# watch mode
-$ pnpm run start:dev
+# Production mode
+pnpm run start:prod
+```
 
-# production mode
-$ pnpm run start:prod
+## API Endpoints
+
+### Register a new user
+
+```
+POST /api/auth/register
+```
+
+Request body:
+
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+### Login
+
+```
+POST /api/auth/login
+```
+
+Request body:
+
+```json
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+### Get Profile (Protected)
+
+```
+GET /api/auth/profile
+```
+
+Headers:
+
+```
+Authorization: Bearer {jwt_token}
+```
+
+## Environment Variables
+
+In production, you should use environment variables:
+
+```
+MONGO_URI=mongodb://localhost:27017/auth-service
+JWT_SECRET=your-secure-jwt-secret
+JWT_EXPIRATION=1h
 ```
 
 ## Test
