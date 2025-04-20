@@ -1,0 +1,99 @@
+version: "3.8"
+
+services:
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Expose port 3000 from the container to the host
+    volumes:
+      - ./services/auth-service/src:/usr/src/app/src # Mount local src to container for hot-reloading
+    environment:
+      # - MONGO_URI= # Use service name 'mongo-db' as hostname
+      # Add other necessary environment variables like JWT_SECRET, JWT_EXPIRATION from services/auth-service/README.md
+      - JWT_SECRET=your-dev-jwt-secret # Use a development secret
+      - JWT_EXPIRATION=1h
+    # depends_on:
+      # - mongo-db # Ensure mongo-db starts before auth-service
+    networks:
+      - delivery-network
+
+  mongo-db:
+    image: mongo:latest
+    ports:
+      - "27017:27017" # Optional: expose MongoDB port to host for direct access
+    volumes:
+      - mongo-data:/data/db # Persist MongoDB data
+    networks:
+      - delivery-network
+
+  # --- Add configurations for other services here ---
+  # user-service:
+  #   build: ./services/user-service
+  #   ports:
+  #     - "3001:3000" # Assuming user-service also runs on 3000 internally, map to 3001 on host
+  #   volumes:
+  #     - ./services/user-service/src:/usr/src/app/src
+  #   environment:
+  #     # Add necessary env vars for user-service
+  #   depends_on:
+  #     - mongo-db # Or another DB if needed
+  #   networks:
+  #     - delivery-network
+
+  # restaurant-service:
+  #   build: ./services/restaurant-service
+  #   ports:
+  #     - "8000:8000" # Assuming Python service runs on 8000
+  #   volumes:
+  #     - ./services/restaurant-service:/app
+  #   environment:
+  #     # Add necessary env vars
+  #   networks:
+  #     - delivery-network
+
+  # order-service:
+  #   build: ./services/order-service
+  #   ports:
+  #     - "8001:8000" # Assuming Python service runs on 8000, map to 8001
+  #   volumes:
+  #     - ./services/order-service:/app
+  #   environment:
+  #     # Add necessary env vars
+  #   networks:
+  #     - delivery-network
+
+  # deliver-service:
+  #   build: ./services/deliver-service
+  #   ports:
+  #     - "9000:9000" # Assuming Go service runs on 9000
+  #   volumes:
+  #     - ./services/deliver-service:/app
+  #   environment:
+  #     # Add necessary env vars
+  #   networks:
+  #     - delivery-network
+
+  # gateway-service:
+  #   build: ./services/gateway-service
+  #   ports:
+  #     - "4000:4000" # Assuming gateway runs on 4000
+  #   volumes:
+  #     - ./services/gateway-service:/app
+  #   environment:
+  #     # Add necessary env vars pointing to other services using their service names
+  #     # e.g., AUTH_SERVICE_URL=http://auth-service:3000/api
+  #   depends_on:
+  #     - auth-service
+  #     - user-service
+  #     # ... other services the gateway depends on
+  #   networks:
+  #     - delivery-network
+
+networks:
+  delivery-network:
+    driver: bridge
+
+volumes:
+  mongo-data: # Define the named volume for MongoDB data persistence

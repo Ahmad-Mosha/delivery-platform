@@ -10,7 +10,6 @@ import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { User } from './schemas/user.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -29,8 +28,10 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@Request() req) {
-    const user: User = req.user;
+    const user = req.user;
+    console.log(user);
     return {
+      id: user.userId,
       email: user.email,
       name: user.name,
       role: user.role,
